@@ -1,0 +1,147 @@
+CREATE TABLE string_manipulation(
+	first_name VARCHAR (50),
+	last_name VARCHAR (50),
+	course_code VARCHAR (50),
+	phone_number BIGINT,
+	card_number VARCHAR (40),
+	gender VARCHAR (40),
+	address VARCHAR (40)
+);
+
+SELECT * FROM string_manipulation;
+
+---Using the CONCAT function
+
+SELECT
+	first_name,
+	last_name,
+	CONCAT (first_name,' ', last_name) AS full_name
+FROM
+	string_manipulation;
+
+SELECT
+	first_name,
+	last_name,
+	CONCAT (first_name, ' lives in ', address) AS sentence
+FROM
+	string_manipulation;
+	
+--REPLACE()
+
+SELECT
+	first_name,
+	last_name,
+	REPLACE(last_name, 'Eze', 'Idanegbe') AS new_last_name
+FROM
+	string_manipulation;
+	
+--UPPER AND LOWER()
+
+SELECT
+	first_name,
+	last_name,
+	UPPER(first_name) AS capitalized_first_name,
+	LOWER(last_name) AS lower_last_name
+FROM
+	string_manipulation;
+
+--LENGHT ()
+
+SELECT
+	first_name,
+	last_name,
+	LENGTH(first_name) AS character_length
+FROM
+	string_manipulation;
+
+--TRIM() FUNCTION
+
+SELECT * FROM string_manipulation;
+
+SELECT
+	gender,
+	LENGTH(gender) AS lengthbeforetrim
+FROM
+	string_manipulation;
+	
+--LTRIM
+
+SELECT
+	gender,
+	LENGTH(gender) AS lengthbeforetrim,
+	LTRIM(gender) AS lefttrimmed,
+	LENGTH(LTRIM(gender)) AS lenghtafterLtrim
+FROM
+	string_manipulation;
+	
+--RTRIM
+
+SELECT
+	gender,
+	LENGTH(gender) AS lengthbeforetrim,
+	LTRIM(gender) AS lefttrimmed,
+	LENGTH(LTRIM(gender)) AS lenghtafterLtrim,
+	RTRIM(gender) AS righttrimmed,
+	LENGTH(RTRIM(gender)) AS lenghtaftertrim	
+FROM
+	string_manipulation;
+	
+--BTRIM
+
+SELECT
+	gender,
+	LENGTH(gender) AS lengthbeforetrim,
+	LTRIM(gender) AS lefttrimmed,
+	LENGTH(LTRIM(gender)) AS lenghtafterLtrim,
+	RTRIM(gender) AS righttrimmed,
+	LENGTH(RTRIM(gender)) AS lenghtaftertrim,
+	LENGTH(gender) AS lengthbeforetrim,
+	BTRIM(gender) AS bothtrimmed,
+	LENGTH(BTRIM(gender)) AS lenghtafterLtrim
+FROM
+	string_manipulation;
+
+--Substring()
+
+SELECT
+	first_name,
+	last_name,
+	address,
+	SUBSTR(address, 9, 5) AS stateofresidence
+FROM
+	string_manipulation;
+
+--LEFT SUBSTR
+
+SELECT
+	first_name,
+	last_name,
+	address,
+	SUBSTR(address, 9, 5) AS stateofresidence,
+	LEFT(address, 6) AS city
+FROM
+	string_manipulation;
+
+--RIGHT SUBSTR
+
+SELECT
+	first_name,
+	last_name,
+	address,
+	SUBSTR(address, 9, 5) AS stateofresidence,
+	LEFT(address, 6),
+	RIGHT(address, 8)
+FROM
+	string_manipulation;
+	
+--TO REMOVE THE .
+
+SELECT
+	first_name,
+	last_name,
+	address,
+	SUBSTR(address, 9, 5) AS stateofresidence,
+	LEFT(address, 6),
+	REPLACE(RIGHT(address, 8), '.',' ') AS country
+FROM
+	string_manipulation;

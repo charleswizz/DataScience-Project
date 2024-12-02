@@ -1,0 +1,356 @@
+SELECT * FROM orders
+
+--Subqueries using SELECT ststement
+
+--create a table that shows pizza_id, size, price and avaerage pizza price
+
+SELECT * FROM pizza
+
+SELECT
+	pizza_id,
+	size,
+	price,
+	(SELECT AVG(price)FROM pizza) AS AveragePizza
+FROM
+	pizza;
+	
+--Scenerio 2: writing subqueries after the FROM keyword
+
+/*
+SELECT
+	*
+FROM
+	(SELECT
+		column1,
+		column2
+	FROM
+		tablename);
+*/
+
+
+--Find the average price of all pizza_id that begins with the letter 't' in the pizza table.
+
+SELECT AVG(price) FROM pizza;
+
+SELECT 
+	* 
+FROM 
+	pizza
+WHERE
+	pizza_id LIKE 't%';
+	
+SELECT
+	pizza_id,
+	price
+FROM
+	(SELECT
+		*
+	FROM
+		pizza
+WHERE
+	pizza_id LIKE 't%') AS subquery;
+	
+--AVG Pizza Pice
+
+SELECT
+	AVG(price)
+FROM
+	(SELECT
+		*
+	FROM
+		pizza
+WHERE
+	pizza_id LIKE 't%') AS subquery;
+	
+--Scenerio 3: Writing Subqueries in a WHERE Clause
+
+--Find the list of all pizza prices that have a higher price than the average pizza price
+
+SELECT AVG(price) FROM pizza;
+
+--Average Price = 16.44 approx.
+
+SELECT
+	pizza_id,
+	price
+FROM
+	pizza
+WHERE
+	price > (SELECT AVG(price) FROM pizza);
+	
+--The IN Operator
+
+SELECT
+	*
+FROM
+	pizza
+WHERE
+	pizza_id IN ('cali_ckn_l', 'ckn_alfredo_m');
+
+--Find the pizza_id and price for all pizzas that sold more than 3 quantity
+
+SELECT
+	DISTINCT
+	pizza_id
+FROM
+	order_details
+WHERE
+	quantity > 3;
+	
+SELECT
+	pizza_id
+	price
+FROM
+	pizza
+WHERE
+	pizza_id IN (SELECT DISTINCT pizza_id FROM order_details WHERE quantity > 3);
+
+--Quantity order from the order_details Table
+
+SELECT
+	pizza_id,
+	quantity
+FROM 
+	order_details
+WHERE
+	pizza_id LIKE 's%';
+
+--Question 1
+
+SELECT 
+	pizza_id, 
+	SUM(quantity) AS totalquantity
+FROM 
+	order_details
+WHERE 
+	pizza_id LIKE 's%'
+GROUP BY 
+	pizza_id
+ORDER BY 
+	totalquantity DESC;
+	
+--Question 2
+
+SELECT 
+	pizza_id,
+	price
+FROM 
+	pizza
+WHERE 
+	price > (SELECT AVG(price) FROM pizza);
+	
+
+SELECT
+	AVG(price) 
+FROM pizza;
+
+CREATE TABLE student(
+	name VARCHAR(50),
+	age INT 
+);
+
+--Insert values into Lecturer and Student Tables
+
+INSERT INTO lecturer (name, age)
+VALUES ('Michael Okhawere', 43), ('Terseer Sarwaun', 45), ('Samuel Kingsley', 48), ('Esiaga Eric',42), ('Solomon Efeoghene', 43), ('Maji Stephen', 41);
+
+SELECT * FROM lecturer;
+
+INSERT INTO student (name, age)
+VALUES ('Akadi Innocent', 40), ('Anthony Erabomen', 25), ('Abu Gloria', 23), ('Archi Blessing', 26), ('Iyere Michael', 22), ('Newton Netflix', 21);
+
+SELECT * FROM student;
+
+INSERT INTO student (name, age)
+VALUES ('Akadi Yemilo', 47);
+
+--is there a student older than the lecturer
+
+SELECT
+	*
+FROM
+	student
+WHERE
+	age > ALL(SELECT age FROM lecturer);
+	
+--is there a student older than any of the lecturer	
+	
+SELECT
+	*
+FROM
+	student
+WHERE
+	age > ANY(SELECT age FROM lecturer);
+
+--SQL JOINS
+
+CREATE TABLE orderTable(
+	order_day VARCHAR NOT NULL,
+	order_id INT NOT NULL PRIMARY KEY,
+	product_id INT NOT NULL,
+	client_id INT NOT NULL
+);
+
+CREATE TABLE Product_Table (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(50),
+    costprice INT,
+    sellingprice INT
+);
+
+CREATE TABLE Client_Table (
+    client_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    location VARCHAR(50)
+);
+
+
+SELECT * FROM ordertable;
+
+--INNER JOIN
+
+SELECT
+	ord.*,
+	cli."first_name",
+	cli."location"
+FROM
+	ordertable AS ord
+INNER JOIN
+	client_table AS cli
+ON
+	cli."client_id" = ord."client_id";
+	
+SELECT
+    ord.*,
+    cli."first_name",
+    cli."location"
+FROM
+    ordertable AS ord
+INNER JOIN
+    client_table AS cli
+ON
+    cli."client_id" = ord."client_id";
+	
+--LEFT JOINS
+
+SELECT * FROM ordertable; 
+
+--Add more values into the OrderTable
+
+INSERT INTO ordertable (order_day, order_id, product_id, client_id) VALUES ('Sunday',1011, 107,105), ('Sunday', 1012, 108, 106);
+	
+SELECT 
+	o.*,
+	c.client_id,
+	c.first_name,
+	c.last_name,
+	c.location
+FROM
+	ordertable AS o
+LEFT JOIN
+	client_table AS c
+ON
+	c.client_id = o.client_id;
+
+--Add additional Table
+
+SELECT 
+	o.*,
+	c.client_id,
+	c.first_name,
+	c.last_name,
+	c.location,
+	p.product_id
+FROM
+	ordertable AS o
+LEFT JOIN
+	client_table AS c
+ON
+	c.client_id = o.client_id
+LEFT JOIN
+	product_table AS p
+ON
+	p.product_id = o.product_id;
+
+--RIGHT JOIN
+
+SELECT * FROM product_table;
+
+INSERT INTO product_table (product_id, product_name, costprice,sellingprice) VALUES (107, 'Pencils', 100, 150), (108, 'Brushes', 50, 70), (109, 'Rulers', 150, 190), (110, 'Stencils', 1000, 1200);
+	
+--Using the RIGHT JOIN
+
+SELECT
+	o.order_day,
+	o.order_id,
+	o.product_id,
+	p.product_id,
+	p.product_name,
+	p.costprice,
+	p.sellingprice,
+	(p.sellingprice - p.costprice) AS profit
+FROM 
+	ordertable AS o
+RIGHT JOIN
+	product_table AS p
+ON
+	p.product_id = o.product_id;
+	
+SELECT
+	o.*,
+	p.*,
+	(p.sellingprice - p.costprice) AS profit
+FROM 
+	ordertable AS o
+RIGHT JOIN
+	product_table AS p
+ON
+	p.product_id = o.product_id;
+	
+--FULL OUTER JOIN
+
+SELECT * FROM ordertable;
+
+INSERT INTO ordertable (order_day, order_id, product_id, client_id) VALUES ('Sunday', 1013, 113, 102);
+
+SELECT
+	o.*,
+	p.*
+FROM
+	ordertable AS o
+FULL JOIN
+	product_table AS p
+ON
+	p.product_id = o.product_id;
+
+--UNION AND UNION ALL
+
+---UNION AND UNION ALL
+
+CREATE TABLE January_class (
+    name VARCHAR(50),
+    student_number INT,
+    score INT
+);
+
+CREATE TABLE February_class (
+    name VARCHAR(255),
+    student_number INT,
+    score INT
+);
+
+SELECT * FROM february_class;
+
+--Using the Union Statement
+
+SELECT * FROM january_class
+UNION
+SELECT * FROM february_class;
+
+
+--Using the Union All
+
+SELECT * FROM january_class
+UNION ALL
+SELECT * FROM february_class;	

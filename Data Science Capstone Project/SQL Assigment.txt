@@ -1,0 +1,31 @@
+Question 1
+
+SELECT 
+	pizza_id, 
+	SUM(quantity) AS totalquantity
+FROM 
+	order_details
+WHERE 
+	pizza_id LIKE 's%'
+GROUP BY 
+	pizza_id
+ORDER BY 
+	totalquantity DESC;
+
+
+--Question 2: Query to show the list of pizza_id with prices higher than the average pizza_id in the Pizza Table
+
+SELECT 
+	pizza_id,
+	price
+FROM 
+	pizza
+WHERE 
+	price > (SELECT AVG(price) FROM pizza);
+	
+
+SELECT
+	AVG(price) 
+FROM pizza;
+
+
